@@ -5,9 +5,13 @@ import { cors, httpErrorHandler } from 'middy/middlewares'
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { getUserId } from '../utils';
 import { createTodo } from '../../helpers/todos'
+import { createLogger } from '../../utils/logger'
+
+const logger = createLogger('CreateTodoHTTP')
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    logger.info("Start HTTP create")
     const userId = getUserId(event)
     const newTodo: CreateTodoRequest = JSON.parse(event.body)
     

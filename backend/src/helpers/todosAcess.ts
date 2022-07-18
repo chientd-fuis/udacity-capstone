@@ -33,11 +33,16 @@ export class TodosAccess {
         todoId: todoId,
         userId: userId
       },
-      UpdateExpression: 'set name = :name, dueDate = :dueDate, done = :done',
+      UpdateExpression: 'SET #name = :name, #dueDate = :dueDate, #done = :done',
+      ExpressionAttributeNames: {
+        '#name': 'name',
+        '#dueDate': 'dueDate',
+        '#done': 'done',
+      },
       ExpressionAttributeValues: {
         ':name': item.name,
         ':dueDate': item.dueDate,
-        ':done': item.done
+        ':done': item.done,
       }
     }).promise()
     logger.info('End UPDATE todo by: ', userId);

@@ -7,13 +7,16 @@ import { cors, httpErrorHandler } from 'middy/middlewares'
 import { updateTodo } from '../../helpers/todos'
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
 import { getUserId } from '../utils'
+import { createLogger } from '../../utils/logger'
+
+const logger = createLogger('GenerateUploadUrl')
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    logger.info("Start HTTP update")
     const todoId = event.pathParameters.todoId
     const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
     const userId = getUserId(event)
-    // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
     await updateTodo(updatedTodo, todoId, userId);
     return {
       statusCode: 200,
