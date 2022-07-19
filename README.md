@@ -18,7 +18,7 @@ Get list profile by User:
 
 # AWS Cloud Formation
 
-![image](https://github.com/chientd-fuis/udacity-capstone/blob/main/images/demo.png)
+![image](https://github.com/chientd-fuis/udacity-capstone/blob/main/images/cloudformation.png)
 
 # Auth0
 
