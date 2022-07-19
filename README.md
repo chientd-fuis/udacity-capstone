@@ -38,16 +38,16 @@ Get list profile by User:
 
 # API endpoint
 
-GET - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos
-POST - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos
-PATCH - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos/{todoId}
-DELETE - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos/{todoId}
-POST - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos/{todoId}/attachment
+- GET - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos
+- POST - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos
+- PATCH - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos/{todoId}
+- DELETE - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos/{todoId}
+- POST - https://ec60ws9xs1.execute-api.us-east-2.amazonaws.com/dev/todos/{todoId}/attachment
 
 # functions:
-  Auth: capstone-dev-Auth
-  GetTodos: capstone-dev-GetTodos
-  CreateTodo: capstone-dev-CreateTodo
-  UpdateTodo: capstone-dev-UpdateTodo
-  DeleteTodo: capstone-dev-DeleteTodo
-  GenerateUploadUrl: capstone-dev-GenerateUploadUrl
+  - Auth: capstone-dev-Auth
+  - GetTodos: capstone-dev-GetTodos
+  - CreateTodo: capstone-dev-CreateTodo
+  - UpdateTodo: capstone-dev-UpdateTodo
+  - DeleteTodo: capstone-dev-DeleteTodo
+  - GenerateUploadUrl: capstone-dev-GenerateUploadUrl
