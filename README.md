@@ -34,7 +34,7 @@ Get list profile by User:
 
 # Trace
 
-![image](https://github.com/chientd-fuis/udacity-capstone/blob/main/images/trace.png)
+![image](https://github.com/chientd-fuis/udacity-capstone/blob/main/images/Trace.png)
 
 # API endpoint
 
