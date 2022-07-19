@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link, Route, Router, Switch } from 'react-router-dom'
-import { Grid, Menu, Segment } from 'semantic-ui-react'
+import { Grid, Menu, Segment, Container,Image } from 'semantic-ui-react'
 
 import Auth from './auth/Auth'
 import { EditTodo } from './components/EditTodo'
@@ -55,13 +55,16 @@ export default class App extends Component<AppProps, AppState> {
 
   generateMenu() {
     return (
-      <Menu>
-        <Menu.Item name="home">
-          <Link to="/">Home</Link>
+      <Menu fixed='top' inverted>
+      <Container>
+        <Menu.Item as='a' header>
+          <Image size='mini' src='https://react.semantic-ui.com/logo.png' style={{ marginRight: '1.5em' }} />
+          Capstone ChienTD
         </Menu.Item>
-
+        <Menu.Item as='a'><Link to="/">Home</Link></Menu.Item>
         <Menu.Menu position="right">{this.logInLogOutButton()}</Menu.Menu>
-      </Menu>
+      </Container>
+    </Menu>
     )
   }
 

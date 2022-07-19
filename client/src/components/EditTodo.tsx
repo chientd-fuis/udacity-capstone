@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 import { getUploadUrl, uploadFile } from '../api/todos-api'
+import { History } from 'history'
 
 enum UploadState {
   NoUpload,
@@ -15,7 +16,8 @@ interface EditTodoProps {
       todoId: string
     }
   }
-  auth: Auth
+  auth: Auth,
+  history: History
 }
 
 interface EditTodoState {
@@ -52,13 +54,12 @@ export class EditTodo extends React.PureComponent<
 
       this.setUploadState(UploadState.FetchingPresignedUrl)
       const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.todoId)
-      console.log(uploadUrl);
       this.setUploadState(UploadState.UploadingFile)
       await uploadFile(uploadUrl, this.state.file)
 
-      alert('File was uploaded!')
-    } catch (e) {
-      // alert('Could not upload a file: ' + e.message)
+      this.props.history.push(`/`)
+    } catch (e: any) {
+      alert('Could not upload a file: ' + e.message)
     } finally {
       this.setUploadState(UploadState.NoUpload)
     }
@@ -69,7 +70,6 @@ export class EditTodo extends React.PureComponent<
       uploadState
     })
   }
-
   render() {
     return (
       <div>

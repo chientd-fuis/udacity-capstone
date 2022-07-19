@@ -1,6 +1,6 @@
 org: chientd2
-app: serverless-todo-app
-service: project-4
+app: capstone-app
+service: capstone
 
 plugins:
   - serverless-webpack
@@ -20,9 +20,9 @@ provider:
     apiGateway: true
 
   environment:
-    TODOS_TABLE: Todos-${self:provider.stage}
+    TODOS_TABLE: Profiles-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-c4-chientd-images-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: serverless-capstone-chientd-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   logs:

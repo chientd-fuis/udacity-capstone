@@ -29,7 +29,7 @@
 							"host": [
 								"{{apiId}}",
 								"execute-api",
-								"us-east-1",
+								"us-east-2",
 								"amazonaws",
 								"com"
 							],

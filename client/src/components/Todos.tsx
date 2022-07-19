@@ -4,14 +4,16 @@ import update from 'immutability-helper'
 import * as React from 'react'
 import {
   Button,
-  Checkbox,
+  Card,
   Divider,
   Grid,
   Header,
   Icon,
   Input,
   Image,
-  Loader
+  Loader,
+  Checkbox,
+  Message
 } from 'semantic-ui-react'
 
 import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
@@ -26,49 +28,74 @@ interface TodosProps {
 interface TodosState {
   todos: Todo[]
   newTodoName: string
+  description: string
   loadingTodos: boolean
+  isHasImage: boolean
+  isSuccess:boolean
+  isError: boolean
 }
 
 export class Todos extends React.PureComponent<TodosProps, TodosState> {
   state: TodosState = {
     todos: [],
     newTodoName: '',
-    loadingTodos: true
+    description: '',
+    loadingTodos: true,
+    isHasImage: false,
+    isSuccess: false,
+    isError: false,
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newTodoName: event.target.value })
   }
 
+  handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ description: event.target.value })
+  }
+
+
   onEditButtonClick = (todoId: string) => {
     this.props.history.push(`/todos/${todoId}/edit`)
   }
 
-  onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onTodoCreate = async () => {
     try {
       const dueDate = this.calculateDueDate()
       const newTodo = await createTodo(this.props.auth.getIdToken(), {
         name: this.state.newTodoName,
+        description: this.state.description,
         dueDate
       })
       this.setState({
         todos: [...this.state.todos, newTodo],
-        newTodoName: ''
+        newTodoName: '',
+        description: '',
+        isSuccess: true
       })
     } catch {
-      alert('Todo creation failed')
+      this.setState({
+        isError: true,
+        isSuccess: false
+      })
     }
+    this.closeMessage()
   }
 
   onTodoDelete = async (todoId: string) => {
     try {
       await deleteTodo(this.props.auth.getIdToken(), todoId)
       this.setState({
-        todos: this.state.todos.filter(todo => todo.todoId !== todoId)
+        todos: this.state.todos.filter(todo => todo.todoId !== todoId),
+        isSuccess: true,
       })
     } catch {
-      alert('Todo deletion failed')
+      this.setState({
+        isError: true,
+        isSuccess: false
+      })
     }
+    this.closeMessage()
   }
 
   onTodoCheck = async (pos: number) => {
@@ -89,6 +116,15 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     }
   }
 
+  closeMessage() {
+    setTimeout(() => {
+      this.setState({
+        isError: false,
+        isSuccess: false
+      })
+    }, 5000);
+  }
+
   async componentDidMount() {
     try {
       const todos = await getTodos(this.props.auth.getIdToken())
@@ -97,17 +133,31 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
         loadingTodos: false
       })
     } catch (e: any) {
-      alert(`Failed to fetch todos: ${e.message}`)
+      this.setState({
+        isError: true,
+        isSuccess: false
+      })
     }
   }
 
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">LIST</Header>
 
         {this.renderCreateTodoInput()}
-
+        {this.state.isSuccess && (<Message positive>
+          <Message.Header>Successfully!!!</Message.Header>
+          <p>
+            Your process is <b>success</b> 
+          </p>
+        </Message>)}
+        {this.state.isError && (<Message negative>
+          <Message.Header>Failed!!!</Message.Header>
+          <p>
+            Your process is <b>failed</b> 
+          </p>
+        </Message>)}
         {this.renderTodos()}
       </div>
     )
@@ -118,18 +168,22 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
       <Grid.Row>
         <Grid.Column width={16}>
           <Input
-            action={{
-              color: 'teal',
-              labelPosition: 'left',
-              icon: 'add',
-              content: 'New task',
-              onClick: this.onTodoCreate
-            }}
-            fluid
-            actionPosition="left"
-            placeholder="To change the world..."
+            style={{ marginLeft: 16}}
+            label={{ icon: 'asterisk' }}
+            labelPosition='left corner'
+            placeholder='Name'
             onChange={this.handleNameChange}
+            value={this.state.newTodoName}
           />
+          <Input
+            style={{ marginLeft: 8, marginRight: 8}}
+            label={{ icon: 'asterisk' }}
+            labelPosition='left corner'
+            placeholder='Description'
+            onChange={this.handleDescriptionChange}
+            value={this.state.description}
+          />
+          <Button onClick={this.onTodoCreate} color='teal'><Icon name='add' />Add</Button>
         </Grid.Column>
         <Grid.Column width={16}>
           <Divider />
@@ -159,50 +213,62 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   renderTodosList() {
     return (
       <Grid padded>
+        <Card.Group>
         {this.state.todos.map((todo, pos) => {
           return (
-            <Grid.Row key={todo.todoId}>
-              <Grid.Column width={1} verticalAlign="middle">
+            <Card key={todo.todoId}>
+              <Card.Content>
+                {todo.attachmentUrl && (
+                <Image src={todo.attachmentUrl} floated='right' size='tiny' />
+              )}
+                <Card.Header>{todo.name}</Card.Header>
+                <Card.Meta>{todo.dueDate}</Card.Meta>
+                <Card.Description>
+                <strong>{todo.description}</strong>
+                </Card.Description>
+              </Card.Content>
+              <Card.Content extra>
                 <Checkbox
                   onChange={() => this.onTodoCheck(pos)}
                   checked={todo.done}
+                  label={{ children: 'Make profile visible' }}
+                  style={{ marginBottom: '8px' }}
                 />
-              </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
-              </Grid.Column>
-              <Grid.Column width={3} floated="right">
-                {todo.dueDate}
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="blue"
-                  onClick={() => this.onEditButtonClick(todo.todoId)}
-                >
-                  <Icon name="pencil" />
-                </Button>
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
-                <Button
-                  icon
-                  color="red"
-                  onClick={() => this.onTodoDelete(todo.todoId)}
-                >
-                  <Icon name="delete" />
-                </Button>
-              </Grid.Column>
-              {todo.attachmentUrl && (
-                <Image src={todo.attachmentUrl} size="small" wrapped />
-              )}
-              <Grid.Column width={16}>
-                <Divider />
-              </Grid.Column>
-            </Grid.Row>
+                <div className='ui two buttons'>
+                  <Button basic color='green' onClick={() => this.onEditButtonClick(todo.todoId)}>
+                  <Icon name="pencil" /> Upload
+                  </Button>
+                  <Button basic color='red' onClick={() => this.onTodoDelete(todo.todoId)}>
+                  <Icon name="delete" /> Delete
+                  </Button>
+                </div>
+              </Card.Content>
+            </Card>
           )
         })}
+        </Card.Group>
       </Grid>
     )
+  }
+
+   checkImage(url?:string): boolean {
+     if (!url) {
+       return false;
+     }
+     const a = false;
+    var request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.send();
+    request.onload = function() {
+      const status = request.status;
+      if (request.status == 200) //if(statusText == OK)
+      {
+        return true
+      } else {
+        return false
+      }
+    }
+    return false;
   }
 
   calculateDueDate(): string {

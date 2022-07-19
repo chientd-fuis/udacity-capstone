@@ -15,7 +15,6 @@ export const handler = middy(
     logger.info("Start HTTP delete")
     const todoId = event.pathParameters.todoId
     const userId = getUserId(event)
-    // TODO: Remove a TODO item by id
     await deleteTodo(todoId, userId);
     
     return {
